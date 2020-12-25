@@ -1,7 +1,3 @@
-/*
-    Usage： find path name
-    实现在给定路径的文件夹树中找到全部匹配name的
-*/
 #include "kernel/types.h"
 #include "kernel/stat.h"
 #include "user/user.h"
@@ -9,7 +5,6 @@
 #include "kernel/fcntl.h"
  
  
-// 返回path中最后一个斜杠之后的元素
 char *getLastElem(char *p){
     char *t=p;
     char *last=0;
@@ -19,14 +14,12 @@ char *getLastElem(char *p){
         }
         t++;
     }
-    // 也可能没有/，那么p指向的文件名
     if(last==0){
         return p;
     }
     return last+1;
 }
 void find(char* path,char *name){
-    // printf("find (%s,,fmt(path):%s,fmtlen:%d,%s)\n",path,fmtname(path),strlen(fmtname(path)),name);
     char buf[512], *p=0;
     int fd;
     struct dirent de;
@@ -60,11 +53,9 @@ void find(char* path,char *name){
         while(read(fd, &de, sizeof(de)) == sizeof(de)){
             if(de.inum == 0)
                 continue;
-            // 计算出当前dirent的路径
             int t=strlen(de.name)>DIRSIZ?DIRSIZ:strlen(de.name);
             memmove(p, de.name, t);
             p[t] = 0;
-            // p让buf这个字符串现在是当前dirent的完整路径
             if(stat(buf, &st) < 0){
                 printf("ls: cannot stat %s\n", buf);
                 continue;
@@ -80,8 +71,6 @@ void find(char* path,char *name){
  
 }
 int main(int argc,char* argv[]){
-    // 这里为了简单，假定一定按照usage使用
-    // 实际上如果只有一个参数，那么搜索路径为当前路径
     if(argc<3){
         exit();
     }

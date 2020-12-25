@@ -27,7 +27,7 @@ void
 kinit()
 {
 
-  for(int i=0;i<3;i++)
+  for(int i=0;i<NCPU;i++)
     initlock(&kmem[i].lock, "kmem");
   freerange(end, (void*)PHYSTOP);
 }
